@@ -15,9 +15,8 @@
       flake-lib,
       nixpkgs,
     }:
-    flake-lib.lib.mkPythonFlake {
-      inherit nixpkgs self;
-      payload.packages =
+    let
+      packages =
         {
           buildPackage,
           pkgs,
@@ -33,6 +32,13 @@
             pythonImportsCheck = [ "bencoding" ];
           };
         };
+    in
+    flake-lib.lib.mkPythonFlake {
+      inherit nixpkgs self;
+      payload = {
+        inherit packages;
+        overlays = packages;
+      };
       upstream = {
         pin = import ./pin.nix;
         pname = "bencoding";
